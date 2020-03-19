@@ -18,9 +18,9 @@ jobs:
         - 10
         - 12
         os: 
-        - ubuntu-14.04
+        - ubuntu-latest
         - windows-latest
-        - macOS-10.13.6
+        - macOS-latest
 
     steps:
     - uses: actions/checkout@v2
