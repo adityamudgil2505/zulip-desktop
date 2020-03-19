@@ -48,10 +48,18 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-#     - name: Building the app
-#       run: npm run dist
-#       env:
-#         NODE_AUTH_TOKEN: ${{ secrets.APP_ID }}
+    - name: Building the app
+      env:
+        ELECTRON: true
+        CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+        APP_VERSION_NUMBER: 0.5.9
+      run: npm run dist
+    - name: see directory
+      run: ls
+    - name: check env
+      run: echo $ELECTRON $FEATHERS_URL
+    - name: see directory in dist
+      run: ls ./dist
         
 #     - name: Deploying to GPR
 #       uses: actions/upload-artifact@v1.0.0
