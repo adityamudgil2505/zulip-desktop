@@ -30,15 +30,23 @@ jobs:
       with:
         node-version: ${{ matrix.node_version }}
 
+    - name: Installing npm modules
+      run: npm install
+
     - name: Running Tests
       run: |
-        npm install
         npm run test
         
     - name: Cache Dependencies
       id: npm-cache
       run: |
         echo "::set-output name=dir::$(npm config get cache)"
+    - uses: actions/cache@v1
+      with:
+        path: ${{ steps.npm-cache.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
 #     - name: Building the app
 #       run: npm run dist
