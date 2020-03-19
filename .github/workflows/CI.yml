@@ -1,0 +1,52 @@
+name: CI/CD
+
+on:
+  push:
+    branches: 
+    - master
+  pull_request:
+    branches: 
+    - master
+
+jobs:
+  test:
+    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version:
+        - 10
+        - 12
+        os: 
+        - ubuntu-14.04
+        - windows-latest
+        - macOS-10.13.6
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setting up Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node_version }}
+
+    - name: Running Tests
+      run: |
+        npm install
+        npm run test
+        
+    - name: Cache Dependencies
+      id: npm-cache
+      run: |
+        echo "::set-output name=dir::$(npm config get cache)"
+
+#     - name: Building the app
+#       run: npm run dist
+#       env:
+#         NODE_AUTH_TOKEN: ${{ secrets.APP_ID }}
+        
+#     - name: Deploying to GPR
+#       uses: actions/upload-artifact@v1.0.0
+#       with:
+#         name: Zulip - ${{matric.os}}
+#         path: /dist/
