@@ -1,5 +1,5 @@
 {
-  "name": "zulipp",
+  "name": "zulip",
   "productName": "Zulip",
   "version": "4.1.0-beta",
   "main": "./app/main",
