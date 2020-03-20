@@ -75,5 +75,5 @@ jobs:
     - name: Deploying to GPR
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Zulip - ${{matric.os}}
+        name: Zulip - ${{matrix.os}}
         path: /dist/
