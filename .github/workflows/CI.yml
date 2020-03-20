@@ -1,22 +1,15 @@
-name: CI/CD
+name: Zulip Desktop CI
 
-on:
-  push:
-    branches: 
-    - testing2
-  pull_request:
-    branches: 
-    - testing2
+on: [push]
 
 jobs:
   test:
-    name: Test on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         node_version:
-        - 10
-        - 12
+        - latest
         os: 
         - ubuntu-latest
 #         - windows-latest
@@ -25,15 +18,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setting up Node.js ${{ matrix.node_version }}
+    - name: Setting up Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node_version }}
+        node-version: latest
 
-    - name: Get npm cache directory
-      id: npm-cache
+    - name: Setup npm cache
       run: |
-        echo "::set-output name=dir::$(npm config get cache)"
+         echo "::set-output name=dir::$(npm config get cache)"
+         
     - uses: actions/cache@v1
       with:
         path: ${{ steps.npm-cache.outputs.dir }}
@@ -45,30 +38,20 @@ jobs:
       run: npm install
 
     - name: Running Tests
-      run: npm run test        
+      run: npm run test
 
-    - name: Electron Builder Action
+    - name: Building app installers
       uses: samuelmeuli/action-electron-builder@v1.3.0
       with:
         github_token: ${{ secrets.github_token }}
+        mac_certs: ${{ secrets.mac_certs }}
+        mac_certs_password: ${{ secrets.mac_certs_password }}
 
     - name: See files in dist folder
       run: ls ./dist
 
-    - name: Cleanup artifacts
-      if: matrix.os != 'windows-latest'
-      run: |
-          mkdir artifacts
-          mv "dist/(*.exe,*.deb,*.AppImage,*.dmg)" artifacts || true
-
-    - name: Cleanup artifacts Win
-      if: matrix.os == 'windows-latest'
-      run: |
-          mkdir artifacts
-          mv dist/*.exe artifacts
-        
-    - name: Deploying to GPR
+    - name: Uploading artifacts
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Zulip - ${{matrix.os}} -${{matrix.node_version}}
+        name: ${{matrix.os}}
         path: ./dist
