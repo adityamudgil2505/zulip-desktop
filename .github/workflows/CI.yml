@@ -49,6 +49,8 @@ jobs:
 
     - name: Electron Builder Action
       uses: samuelmeuli/action-electron-builder@v1.3.0
+      with:
+        github_token: ${{ secrets.github_token }}
 
     - name: See files in dist folder
       run: ls ./dist
