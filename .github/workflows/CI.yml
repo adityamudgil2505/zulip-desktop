@@ -19,8 +19,8 @@ jobs:
         - 12
         os: 
         - ubuntu-latest
-        - windows-latest
-        - macOS-latest
+#         - windows-latest
+#         - macOS-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -56,18 +56,24 @@ jobs:
 
         # Whether the app should be released after a successful build
         release:  ${{ startsWith(github.ref, 'refs/tags/v') }}
-
-#         build_script_name: dist
    
-    - name: see directory
-      run: ls
-    - name: check env
-      run: echo $ELECTRON $FEATHERS_URL
+    - name: Cleanup artifacts
+      if: matrix.os != 'windows-latest'
+      run: |
+          mkdir artifacts
+          mv "dist/(*.exe,*.deb,*.AppImage,*.dmg)" artifacts || true
+
+    - name: Cleanup artifacts Win
+      if: matrix.os == 'windows-latest'
+      run: |
+          mkdir artifacts
+          mv dist/*.exe artifacts
+   
     - name: see directory in dist
       run: ls ./dist
         
-#     - name: Deploying to GPR
-#       uses: actions/upload-artifact@v1.0.0
-#       with:
-#         name: Zulip - ${{matric.os}}
-#         path: /dist/
+    - name: Deploying to GPR
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Zulip - ${{matric.os}}
+        path: /dist/
