@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   test:
-    name: ${{ runner.os }}
+    name: ${{ matrix.os }}
     runs-on: ${{ runner.os }}
     strategy:
       matrix:
@@ -14,12 +14,14 @@ jobs:
 #         - macOS-latest
 
     steps:
+    - name: Test
+      run: echo ${{ runner.os }}
     - uses: actions/checkout@v2
 
     - name: Setting up Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: 12.x
+        node-version: '12.x'
 
     - name: Setup npm cache
       id: npm-cache
