@@ -4,8 +4,8 @@ on: [push]
 
 jobs:
   test:
-    name: Test on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: ${{ runner.os }}
+    runs-on: ${{ runner.os }}
     strategy:
       matrix:
         os: 
@@ -19,7 +19,7 @@ jobs:
     - name: Setting up Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '*'
+        node-version: 12.x
 
     - name: Setup npm cache
       id: npm-cache
@@ -48,7 +48,7 @@ jobs:
 #         mac_certs: ${{ secrets.mac_certs }}
 #         mac_certs_password: ${{ secrets.mac_certs_password }}
 
-#     - name: See files in dist folder
+#     - name: Listing content in ./dist
 #       run: ls ./dist
 
 #     - name: Uploading artifacts
